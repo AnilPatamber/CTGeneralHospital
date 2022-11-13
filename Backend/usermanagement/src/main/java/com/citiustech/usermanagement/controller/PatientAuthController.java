@@ -74,11 +74,8 @@ public class PatientAuthController {
 			ResponseObject response = new ResponseObject(HttpStatus.CREATED.value(), "User created successfully",
 					LocalDateTime.now());
 			logger.info("Valid User response : {}", response);
-<<<<<<< HEAD:Backend/usermanagement/usermanagement/src/main/java/com/citiustech/usermanagement/controller/PatientAuthController.java
 			emailSenderService.sendWelcomeEmail(patientDto.getFirstName(), patientDto.getEmail());
-=======
 			//emailSenderService.sendWelcomeEmail(patientDto.getFirstName(),patientDto.getEmail());
->>>>>>> 15a41976897eea1bb51c65d030f0fccb627bed34:Backend/usermanagement/src/main/java/com/citiustech/usermanagement/controller/PatientAuthController.java
 			return new ResponseEntity<>(response, HttpStatus.CREATED);
 
 		} catch (Exception e) {

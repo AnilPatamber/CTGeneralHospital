@@ -6,13 +6,10 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-<<<<<<< HEAD:Backend/usermanagement/usermanagement/src/main/java/com/citiustech/usermanagement/controller/UserController.java
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-=======
->>>>>>> 15a41976897eea1bb51c65d030f0fccb627bed34:Backend/usermanagement/src/main/java/com/citiustech/usermanagement/controller/UserController.java
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -168,7 +165,6 @@ public class UserController {
 
 	}
 
-	
 	@GetMapping("/patient/count")
 	public ResponseEntity<Long> getPatientCount() {
 

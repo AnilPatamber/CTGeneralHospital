@@ -20,23 +20,21 @@ public class CustomWebSecurityConfig {
 	@Autowired
 	private CustomUserDetailsService customUserDetialsService;
 
-	//"/swagger-ui/**", "/v3/api-docs/**","/actuator/**", 
-	
+	// "/swagger-ui/**", "/v3/api-docs/**","/actuator/**",
+
 	@Bean
 	SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
 
 		http.csrf().disable();
-<<<<<<< HEAD:Backend/usermanagement/usermanagement/src/main/java/com/citiustech/usermanagement/config/CustomWebSecurityConfig.java
-		
-		http.cors().and().authorizeHttpRequests((auth) -> auth.antMatchers("/patient/**").permitAll()
-				.antMatchers("/auth/**").authenticated());
-				//.anyRequest().authenticated());
-=======
 
-		http.cors().and().authorizeHttpRequests((auth) -> auth.antMatchers("/patient/register", "/patient/login","/patient/changepassword/**","/sendemail/**").permitAll()
-				);
-		//.anyRequest().authenticated()
->>>>>>> 15a41976897eea1bb51c65d030f0fccb627bed34:Backend/usermanagement/src/main/java/com/citiustech/usermanagement/config/CustomWebSecurityConfig.java
+		http.cors().and().authorizeHttpRequests(
+				(auth) -> auth.antMatchers("/patient/**").permitAll().antMatchers("/auth/**").authenticated());
+		// .anyRequest().authenticated());
+
+		http.cors().and().authorizeHttpRequests((auth) -> auth
+				.antMatchers("/patient/register", "/patient/login", "/patient/changepassword/**", "/sendemail/**")
+				.permitAll());
+		// .anyRequest().authenticated()
 
 		http.httpBasic().and().formLogin().and().sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
