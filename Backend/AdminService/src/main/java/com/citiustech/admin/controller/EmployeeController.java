@@ -255,4 +255,9 @@ public class EmployeeController {
 		logger.info("fetching employees successfully");
 		return new ResponseEntity<>(employee, HttpStatus.OK);
 	}
+	
+	@GetMapping
+	public String getAdminService() {
+		return "Welcome to Admin Service";
+	}
 }

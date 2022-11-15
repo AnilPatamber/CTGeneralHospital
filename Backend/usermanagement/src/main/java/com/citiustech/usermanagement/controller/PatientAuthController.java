@@ -68,24 +68,23 @@ public class PatientAuthController {
 	@PostMapping("/register")
 	public ResponseEntity<ResponseObject> registerPatientUser(@Valid @RequestBody PatientDto patientDto) {
 
-		try {
+//		try {
 
 			userService.registerPatientUser(patientDto);
 			ResponseObject response = new ResponseObject(HttpStatus.CREATED.value(), "User created successfully",
 					LocalDateTime.now());
 			logger.info("Valid User response : {}", response);
 			emailSenderService.sendWelcomeEmail(patientDto.getFirstName(), patientDto.getEmail());
-			//emailSenderService.sendWelcomeEmail(patientDto.getFirstName(),patientDto.getEmail());
 			return new ResponseEntity<>(response, HttpStatus.CREATED);
-
-		} catch (Exception e) {
-
-			ResponseObject response = new ResponseObject(HttpStatus.BAD_REQUEST.value(),
-					"User was not created successfully", LocalDateTime.now());
-			logger.error("Error User response : {}", response);
-			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-
-		}
+//
+//		} catch (Exception e) {
+//
+//			ResponseObject response = new ResponseObject(HttpStatus.BAD_REQUEST.value(),
+//					"User was not created successfully", LocalDateTime.now());
+//			logger.error("Error User response : {}", response);
+//			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+//
+//		}
 
 	}
 
