@@ -13,6 +13,7 @@ import com.citiustech.admin.dto.ChangePasswordDto;
 import com.citiustech.admin.dto.EmployeeDto;
 import com.citiustech.admin.entity.Employee;
 import com.citiustech.admin.entity.Person;
+import com.citiustech.admin.entity.Role;
 import com.citiustech.admin.entity.Status;
 import com.citiustech.admin.exception.EmployeeAlreadyExistException;
 import com.citiustech.admin.exception.EmployeeNotFoundException;
@@ -22,26 +23,22 @@ import com.citiustech.admin.utility.RandomPassword;
 
 @Service
 @Transactional
-
 public class EmployeeServiceImpl implements EmployeeService {
+
 	@Autowired
 	public EmployeeRepository employeeRepository;
+
 	@Autowired
 	private RandomPassword randomPassword;
 
 	@Autowired
 	EmailSenderService emailSenderService;
+
 	@Autowired
 	DataTransfer dataTransfer;
 
 	@Override
 	public List<Employee> getAllEmployees() {
-		//Iterable<Employee> employees = employeeRepository.findAll();
-//		List<EmployeeDto> employeeDto = new ArrayList<>();
-//		employees.forEach(employee -> {
-//			employeeDto.add(dataTransfer.addDatatoDto(employee));
-//		});
-//		return employeeDto;
 		return employeeRepository.findAll();
 
 	}
@@ -60,7 +57,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 			throw new EmployeeAlreadyExistException(
 					"Patient user already exist with the email " + employeeDto.getEmailID());
 		}
-		Employee employee =dataTransfer.addDatatoEntity(employeeDto);
+		Employee employee = dataTransfer.addDatatoEntity(employeeDto);
 		System.out.println(employee);
 		Employee employee1 = employeeRepository.save(employee);
 		return employee1.getPerson().getFirstName();
@@ -69,9 +66,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Override
 	public Employee getEmployeeByID(String employeeID) {
-		//Optional<Employee> employee = employeeRepository.findById(employeeID);
-		//EmployeeDto emplyoeeDto = dataTransfer.addDatatoDto(employee.get());
-		return employeeRepository.findById(employeeID).orElseThrow(() -> new EmployeeNotFoundException("Employee user not found with the employeeID : " + employeeID));
+		// Optional<Employee> employee = employeeRepository.findById(employeeID);
+		// EmployeeDto emplyoeeDto = dataTransfer.addDatatoDto(employee.get());
+		return employeeRepository.findById(employeeID).orElseThrow(
+				() -> new EmployeeNotFoundException("Employee user not found with the employeeID : " + employeeID));
 	}
 
 	@Override
@@ -109,24 +107,23 @@ public class EmployeeServiceImpl implements EmployeeService {
 		Optional<Employee> optional = employeeRepository.findById(employeeID);
 		Employee employee = optional.orElseThrow(
 				() -> new EmployeeNotFoundException("Employee user not found with the employeeID : " + employeeID));
-		
+
 		String currentPassword = changePasswordDto.getOldPassword();
 		String newPassword = changePasswordDto.getNewPassword();
 		String confirmNewPassword = changePasswordDto.getConfirmPassword();
-		if(!(currentPassword.equals(employee.getPassword()))){
+		if (!(currentPassword.equals(employee.getPassword()))) {
 			throw new Exception("Password not matching");
-		}else if (!newPassword.equals(confirmNewPassword)) {
-		throw new Exception("New Password and Confirm password should be same");
-	}
+		} else if (!newPassword.equals(confirmNewPassword)) {
+			throw new Exception("New Password and Confirm password should be same");
+		}
 		employee.setPassword(newPassword);
-		
+
 //		if (!(bcryptEncoder.matches(currentPassword, patientUser.getPassword()))) {
 //			throw new Exception("Password not matching");
 //		} else if (!newPassword.equals(confirmNewPassword)) {
 //			throw new Exception("New Password and Confirm password should be same");
 //		}
-		
-		
+
 	}
 
 	@Override
@@ -136,41 +133,40 @@ public class EmployeeServiceImpl implements EmployeeService {
 		return employeeRepository.findAll();
 	}
 
-	
 	@Override
 	public void updateEmployee(String employeeID, EmployeeDto employeedto) {
-		Employee employee = employeeRepository.findById(employeeID).
-		orElseThrow(()->new EmployeeNotFoundException("employee doesn't exit by given id"));
-	//employee1 = dataTransfer.addDatatoEntity(employeeDto);
-	
-		employee.setDateOfJoining(employeedto.getDateOfJoining() != null ? employeedto.getDateOfJoining() : employee.getDateOfJoining());
-        employee.setEmailID(employeedto.getEmailID() != null ? employeedto.getEmailID() : employee.getEmailID());
-       
-        employee.setRole(employeedto.getRole()!=null?employeedto.getRole():employee.getRole());
-        employee.setStatus((employeedto.getStatus()!=null?employeedto.getStatus():employee.getStatus()));
-        employee.setPassword(
-              employeedto.getPassword() != null ? employeedto.getPassword() : employee.getPassword());
-        Person person=new Person();
-        person.setContactNumber(employeedto.getPersonDto().getContactNumber()!=null?
-        		employeedto.getPersonDto().getContactNumber():employee.getPerson().getContactNumber());
-        person.setDateOfBirth(employeedto.getPersonDto().getDateOfBirth()!=null?
-        		employeedto.getPersonDto().getDateOfBirth():employee.getPerson().getDateOfBirth());
-        person.setFirstName(employeedto.getPersonDto().getFirstName()!=null?
-        		employeedto.getPersonDto().getFirstName():employee.getPerson().getFirstName());
-        person.setLastName(employeedto.getPersonDto().getLastName()!=null?
-        		employeedto.getPersonDto().getLastName():employee.getPerson().getLastName());
-        person.setGender(employeedto.getPersonDto().getGender()!=null?
-        		employeedto.getPersonDto().getGender():employee.getPerson().getGender());
-        
-        person.setTitle(employeedto.getPersonDto().getTitle()!=null?
-        		employeedto.getPersonDto().getTitle():employee.getPerson().getTitle());
+		Employee employee = employeeRepository.findById(employeeID)
+				.orElseThrow(() -> new EmployeeNotFoundException("employee doesn't exit by given id"));
+		// employee1 = dataTransfer.addDatatoEntity(employeeDto);
 
-        employee.setPerson(person);
-      
+		employee.setDateOfJoining(
+				employeedto.getDateOfJoining() != null ? employeedto.getDateOfJoining() : employee.getDateOfJoining());
+		employee.setEmailID(employeedto.getEmailID() != null ? employeedto.getEmailID() : employee.getEmailID());
 
+		employee.setRole(employeedto.getRole() != null ? employeedto.getRole() : employee.getRole());
+		employee.setStatus((employeedto.getStatus() != null ? employeedto.getStatus() : employee.getStatus()));
+		employee.setPassword(employeedto.getPassword() != null ? employeedto.getPassword() : employee.getPassword());
+		Person person = new Person();
+		person.setContactNumber(
+				employeedto.getPersonDto().getContactNumber() != null ? employeedto.getPersonDto().getContactNumber()
+						: employee.getPerson().getContactNumber());
+		person.setDateOfBirth(
+				employeedto.getPersonDto().getDateOfBirth() != null ? employeedto.getPersonDto().getDateOfBirth()
+						: employee.getPerson().getDateOfBirth());
+		person.setFirstName(
+				employeedto.getPersonDto().getFirstName() != null ? employeedto.getPersonDto().getFirstName()
+						: employee.getPerson().getFirstName());
+		person.setLastName(employeedto.getPersonDto().getLastName() != null ? employeedto.getPersonDto().getLastName()
+				: employee.getPerson().getLastName());
+		person.setGender(employeedto.getPersonDto().getGender() != null ? employeedto.getPersonDto().getGender()
+				: employee.getPerson().getGender());
 
-			employeeRepository.save(employee);
-		
+		person.setTitle(employeedto.getPersonDto().getTitle() != null ? employeedto.getPersonDto().getTitle()
+				: employee.getPerson().getTitle());
+
+		employee.setPerson(person);
+
+		employeeRepository.save(employee);
 
 	}
 
@@ -183,20 +179,19 @@ public class EmployeeServiceImpl implements EmployeeService {
 		if (employee1.getStatus().equals(Status.ACTIVE)) {
 
 			if (employee1.getPassword().equals(password)) {
-				
+
 				return ("employee Logined Successfully ");
 			} else {
-				  throw new Exception("Wrong Credentials ");
+				throw new Exception("Wrong Credentials ");
 
 			}
 		} else if (employee1.getStatus().equals(Status.INACTIVE)) {
-			 throw new Exception("Wrong Credentials ");
-                
+			throw new Exception("Wrong Credentials ");
+
 		} else {
-			 throw new Exception("Wrong Credentials ");
-			 // return ("can't login, you are blocked");
+			throw new Exception("Wrong Credentials ");
+			// return ("can't login, you are blocked");
 		}
-		
 
 	}
 
@@ -208,8 +203,21 @@ public class EmployeeServiceImpl implements EmployeeService {
 		String otp = randomPassword.generateRandomPassword();
 		employee1.setPassword(otp);
 		emailSenderService.sendOtpOverEmail(employee1.getPerson().getFirstName(), emailID, otp);
-		
+
 		return true;
+	}
+
+	@Override
+	public List<String> getPhysicianNames() {
+
+		List<String> physicianNamesList = new ArrayList<>();
+		List<Employee> employeeList = getAllEmployees();
+		employeeList.forEach((emp) -> {
+			if(emp.getRole().equals(Role.PHYSICIAN))
+			physicianNamesList.add(emp.getPerson().getFirstName() + " " + emp.getPerson().getLastName());
+		});
+
+		return physicianNamesList;
 	}
 
 }

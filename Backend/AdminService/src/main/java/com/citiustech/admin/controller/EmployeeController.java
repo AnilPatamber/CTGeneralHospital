@@ -1,6 +1,7 @@
 package com.citiustech.admin.controller;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -39,8 +40,7 @@ public class EmployeeController {
 	 * @param PatientAuthController.class
 	 */
 	Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	
+
 	/*
 	 * Rest endpoint to register new employee user into database as a Model of
 	 * EmployeeDto class
@@ -61,13 +61,11 @@ public class EmployeeController {
 		} catch (Exception e) {
 			ResponseObject response = new ResponseObject(HttpStatus.BAD_REQUEST.value(),
 					"User was not created successfully", LocalDateTime.now());
-			 logger.error("Error employee response : {}", response);
+			logger.error("Error employee response : {}", response);
 			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 		}
 	}
 
-	
-	
 	/*
 	 * Rest endpoint to find employee using employeeID
 	 * 
@@ -106,7 +104,7 @@ public class EmployeeController {
 		} catch (Exception e) {
 			ResponseObject response = new ResponseObject(HttpStatus.BAD_REQUEST.value(), "Password change failed",
 					LocalDateTime.now());
-			 logger.error("Error update password employee response : {}", response);
+			logger.error("Error update password employee response : {}", response);
 			return new ResponseEntity<ResponseObject>(response, HttpStatus.BAD_REQUEST);
 
 		}
@@ -114,8 +112,7 @@ public class EmployeeController {
 
 	/*
 	 * Rest endpoint to get employee from database using firstName
-	 * 
-	 * 
+	 *
 	 * @param firstName
 	 * 
 	 * @return A ResponseEntity representing the ResponseObject class
@@ -126,9 +123,22 @@ public class EmployeeController {
 		logger.info("fetching employee by firstName successfully");
 		return new ResponseEntity<>(employee, HttpStatus.OK);
 	}
-	
-	
-	
+
+	/*
+	 * Rest endpoint to get employee from database using firstName
+	 * 
+	 * @param firstName
+	 * 
+	 * @return A ResponseEntity representing the ResponseObject class
+	 */
+	@GetMapping(value = "/employees/pnames")
+	public ResponseEntity<List<String>> getPhysicianNames() {
+		
+		List<String> physicianNamesList = employeeService.getPhysicianNames();
+		logger.info("fetching physician names successfull");
+		return new ResponseEntity<List<String>>(physicianNamesList, HttpStatus.OK);
+
+	}
 
 	/*
 	 * Rest endpoint to upadate/change employee status
@@ -150,12 +160,9 @@ public class EmployeeController {
 		} catch (Exception e) {
 			ResponseObject response = new ResponseObject(HttpStatus.BAD_REQUEST.value(), "Status updation failed",
 					LocalDateTime.now());
-			 logger.error("Error employee status response : {}", response);
+			logger.error("Error employee status response : {}", response);
 			return new ResponseEntity<ResponseObject>(response, HttpStatus.BAD_REQUEST);
 		}
-		
-		
-		
 
 	}
 	/*
@@ -178,12 +185,10 @@ public class EmployeeController {
 		} catch (Exception e) {
 			ResponseObject response = new ResponseObject(HttpStatus.BAD_REQUEST.value(), "employee updation failed",
 					LocalDateTime.now());
-			 logger.error("Error whole employee  response : {}", response);
+			logger.error("Error whole employee  response : {}", response);
 			return new ResponseEntity<ResponseObject>(response, HttpStatus.BAD_REQUEST);
 		}
 	}
-	
-	
 
 	/*
 	 * Rest endpoint to forgot password functionality
@@ -204,7 +209,7 @@ public class EmployeeController {
 		} catch (Exception e) {
 			ResponseObject response = new ResponseObject(HttpStatus.BAD_REQUEST.value(),
 					"employee password reset failed", LocalDateTime.now());
-			 logger.error("Error employee password  response : {}", response);
+			logger.error("Error employee password  response : {}", response);
 			return new ResponseEntity<ResponseObject>(response, HttpStatus.BAD_REQUEST);
 		}
 
@@ -236,26 +241,26 @@ public class EmployeeController {
 			logger.error("Error occured while fetching access token");
 			ResponseObject response = new ResponseObject(HttpStatus.UNAUTHORIZED.value(),
 					"Login Unsuccessfull,Bad Credentials", currentTime);
-		
+
 			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
 
 		}
 
 	}
-	
+
 	/*
-	 * Rest endpoint  to get all employee list from database
+	 * Rest endpoint to get all employee list from database
 	 * 
 	 * 
 	 * @return A ResponseEntity representing the list of employee
-     */
+	 */
 	@GetMapping(value = "/employees")
 	public ResponseEntity<List<Employee>> getAllEmployee() {
 		List<Employee> employee = employeeService.getAllEmployees();
 		logger.info("fetching employees successfully");
 		return new ResponseEntity<>(employee, HttpStatus.OK);
 	}
-	
+
 	@GetMapping
 	public String getAdminService() {
 		return "Welcome to Admin Service";

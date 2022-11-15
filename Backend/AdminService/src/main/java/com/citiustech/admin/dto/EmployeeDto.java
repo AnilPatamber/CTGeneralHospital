@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmployeeDto {
-	//private int employeeID;
 
 	private PersonDto personDto;
 	private String emailID;
