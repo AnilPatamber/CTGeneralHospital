@@ -1,0 +1,11 @@
+/* 
+@media only screen and (max-device-width: 580px) {
+    .header-custom{
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgb(255, 0, 166);
+        width: 200%;
+    }
+
+} */

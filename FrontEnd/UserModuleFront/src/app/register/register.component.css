@@ -1,0 +1,43 @@
+.custom-bg{
+    /* background:10% center no-repeat url('/assets/logo.svg'); */
+    /* background: none; */
+    background-size: 40%;
+    border: 1px solid black;
+    /* min-width: 927px; */
+    width: 50%;
+    margin: 0 auto; 
+    /* color: red; */
+}
+.register{
+    /* padding: 24px 32px; */
+    width: 100%;
+    display: flex;
+}
+/* .register label{
+    width:19.2rem;
+}
+
+.clr-form-horizontal .clr-input-group{
+    width: 100%;
+}
+
+.register input{
+    width: 100%;
+} */
+
+@media only screen and (max-device-width: 1325px) {
+    .custom-bg{
+        width: 60%;
+    }
+
+}
+@media only screen and (max-device-width: 769px) {
+    .custom-bg{
+        width: 100%;
+    }
+
+}
+.logo {
+    /* font-family: 'Courgette', cursive; */
+    /* font-family: 'Times New Roman', Times, serif; */
+}

@@ -1,0 +1,42 @@
+.buttons {
+    background-color: rgb(0, 76, 142); /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 10px 20px;
+    cursor: pointer;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    height: 70%;
+    width: 30%;
+    word-wrap: break-word;
+  }
+  .buttons:hover {
+    
+    height: 80%;
+    width: 33%;
+    background-color: crea;
+    box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.461),0 17px 50px 0 rgba(0,0,0,0.19);
+  }
+
+.btn-wrapper{
+    display: flex;
+    height: 60vh;
+    justify-content: space-around;
+}
+.btn-wrapper button{
+    font-size: 1em;
+    height: 100%;
+    width: 100%;
+}
+
+@media (max-width: 910px) {
+    .btn-wrapper{
+        flex-direction: column;
+        align-items: center;
+    }
+}

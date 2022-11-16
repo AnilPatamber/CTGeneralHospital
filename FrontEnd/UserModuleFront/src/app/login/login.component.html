@@ -1,0 +1,40 @@
+<div class="login-wrapper custom-bg">
+    <form class="login">
+        <section class="title">
+            <h3 class="welcome">Welcome to</h3>
+            <div class="logo">CT General Hospital</div>
+            <!-- <h5 class="hint">Use your Company ID to sign in or create one now</h5> -->
+        </section>
+        <div class="login-group">
+            <clr-select-container>
+                <label>User Role</label>
+                <select clrSelect  name="type" [(ngModel)]="userType">
+                    <option value="admin">Administrator</option>
+                    <option value="employee">Hospital Employee</option>
+                    <option value="Patient">Patient</option>
+                </select>
+            </clr-select-container>
+            <clr-input-container>
+                <label class="clr-sr-only">Username</label>
+                <input type="email" name="username" clrInput placeholder="Username" [(ngModel)]="username"/>
+            </clr-input-container>
+            <clr-password-container>
+                <label class="clr-sr-only">Password</label>
+                <input type="password" name="password" clrPassword placeholder="Password" [(ngModel)]="password"/>
+            </clr-password-container>
+            <!-- <clr-checkbox-wrapper>
+                <label>Remember me</label>
+                <input type="checkbox" name="rememberMe" clrCheckbox [(ngModel)]="rememberMe"/>
+            </clr-checkbox-wrapper> -->
+            <div>
+                <a routerLink="/forgot" class="signup">Forgot Password? click here.</a>
+            </div>
+            
+            <div class="error active" *ngIf="showError">
+                Invalid user name or password
+            </div>
+            <button type="submit" class="btn btn-primary" (click)="loginWithRole()">LOGIN</button>
+            <a routerLink="/register" class="signup">New user? Register here.</a>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,76 @@
+<div class="login-wrapper custom-bg">
+    <form clrForm class="login register"><section class="title">
+        <div class="logo"><u>New Registration</u></div>
+        <h4>Please enter the required details below!</h4>
+        <hr>
+    </section>
+        <clr-radio-container clrInline>
+            <label>Title</label>
+            <clr-radio-wrapper>
+              <input type="radio" clrRadio name="Mr" required value="Mr." [(ngModel)]="patient.title" />
+              <label>Mr.</label>
+            </clr-radio-wrapper>
+            <clr-radio-wrapper>
+              <input type="radio" clrRadio name="Mrs" required value="MRS." [(ngModel)]="patient.title" />
+              <label>MRS.</label>
+            </clr-radio-wrapper>
+            <clr-radio-wrapper>
+              <input type="radio" clrRadio name="Miss" required value="MISS." [(ngModel)]="patient.title" />
+              <label>MISS.</label>
+            </clr-radio-wrapper>
+            <clr-control-error>This field is required!</clr-control-error>
+          </clr-radio-container>
+        <clr-input-container>
+          <label>First Name</label>
+          <input clrInput type="text" placeholder="First Name" [(ngModel)]="patient.firstName" name="firstName" required />
+          <clr-control-error>Please enter first name</clr-control-error>
+        </clr-input-container>
+        <clr-input-container>
+          <label>Last Name</label>
+          <input clrInput type="text" placeholder="Last Name" [(ngModel)]="patient.lastName" name="lastName" required />
+          <clr-control-error>Please enter last name</clr-control-error>
+        </clr-input-container>
+        <clr-radio-container clrInline>
+            <label>Gender</label>
+            <clr-radio-wrapper>
+              <input type="radio" clrRadio name="Male" required value="M" [(ngModel)]="patient.gender" />
+              <label>Male</label>
+            </clr-radio-wrapper>
+            <clr-radio-wrapper>
+              <input type="radio" clrRadio name="Female" required value="F" [(ngModel)]="patient.gender" />
+              <label>Female</label>
+            </clr-radio-wrapper>
+            <clr-control-error>This field is required!</clr-control-error>
+          </clr-radio-container>
+          <clr-input-container>
+            <label>Contact Number</label>
+            <input clrInput type="number" placeholder="Contact Number" [(ngModel)]="patient.contactNumber" name="contactNumber" required />
+            <clr-control-error *clrIfError="'required'">Please enter contact number</clr-control-error>
+          </clr-input-container>
+          <clr-input-container>
+            <label>Email</label>
+            <input clrInput type="email" placeholder="Email" [(ngModel)]="patient.email" name="email" required />
+            <clr-control-error>Please enter email</clr-control-error>
+          </clr-input-container>
+          <clr-password-container>
+            <label>Password</label>
+            <input placeholder="Password" clrPassword [(ngModel)]="patient.password" name="password" required/>
+            <clr-control-error *clrIfError="'required'">This field is required!</clr-control-error>
+            <clr-control-error *clrIfError="'minlength'">It must be at least 8 characters!</clr-control-error>
+          </clr-password-container>
+          <clr-password-container>
+            <label>Confirm Password</label>
+            <input placeholder="Password" clrPassword [(ngModel)]="confirmPass" name="conf-password" required/>
+            <clr-control-error *ngIf="passEquals">Password should be equal</clr-control-error>
+            <clr-control-error *clrIfError="'required'" >This field is required!</clr-control-error>
+          </clr-password-container>
+          <clr-date-container>
+            <label>DOB</label>
+            <input type="date" clrDate name="maxDemo" [(ngModel)]="patient.dateOfBirth" max={{todayDate}} />
+            <clr-control-error *clrIfError="'max'">Error message about max date</clr-control-error>
+          </clr-date-container><br>
+          <button type="submit" class="btn btn-primary" (click)="registor()">Sign Up</button>
+          <a routerLink="/login" class="signup">already register? login here.</a>
+           
+    </form>
+</div>
