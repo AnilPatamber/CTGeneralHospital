@@ -10,7 +10,7 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.citiustech.appointment</groupId>
-	<artifactId>inbox-service</artifactId>
+	<artifactId>appointment-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>appointment-service</name>
 	<description>Appointment Module</description>
