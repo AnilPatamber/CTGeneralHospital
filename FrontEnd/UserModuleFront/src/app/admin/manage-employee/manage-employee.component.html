@@ -1,0 +1,100 @@
+
+<div class="buttons">
+    <button class="btn btn-primary" (click)="getAllEmployees()" >Show All Employees</button>
+    <button class="btn btn-primary" (click)="printUsers()">Add New Employees</button>
+</div>
+<div class="login-wrapper custom-bg" *ngIf="!showAll">
+    <form clrForm class="login register"><section class="title">
+        <div ><u>Add New Employee</u></div>
+        <hr>
+    </section>
+        <clr-radio-container clrInline>
+            <label>Title</label>
+            <clr-radio-wrapper>
+              <input type="radio" clrRadio name="Mr" required value="Mr." [(ngModel)]="person.title" />
+              <label>Mr.</label>
+            </clr-radio-wrapper>
+            <clr-radio-wrapper>
+              <input type="radio" clrRadio name="Mrs" required value="MRS." [(ngModel)]="person.title" />
+              <label>MRS.</label>
+            </clr-radio-wrapper>
+            <clr-radio-wrapper>
+              <input type="radio" clrRadio name="Miss" required value="MISS." [(ngModel)]="person.title" />
+              <label>MISS.</label>
+            </clr-radio-wrapper>
+            <clr-control-error>This field is required!</clr-control-error>
+          </clr-radio-container>
+        <clr-input-container>
+          <label>First Name</label>
+          <input clrInput type="text" placeholder="First Name" [(ngModel)]="person.firstName" name="firstName" required />
+          <clr-control-error>Please enter first name</clr-control-error>
+        </clr-input-container>
+        <clr-input-container>
+          <label>Last Name</label>
+          <input clrInput type="text" placeholder="Last Name" [(ngModel)]="person.lastName" name="lastName" required />
+          <clr-control-error>Please enter last name</clr-control-error>
+        </clr-input-container>
+        <clr-radio-container clrInline>
+            <label>Gender</label>
+            <clr-radio-wrapper>
+              <input type="radio" clrRadio name="Male" required value="M" [(ngModel)]="person.gender" />
+              <label>Male</label>
+            </clr-radio-wrapper>
+            <clr-radio-wrapper>
+              <input type="radio" clrRadio name="Female" required value="F" [(ngModel)]="person.gender" />
+              <label>Female</label>
+            </clr-radio-wrapper>
+            <clr-control-error>This field is required!</clr-control-error>
+          </clr-radio-container>
+          <clr-input-container>
+            <label>Contact Number</label>
+            <input clrInput type="number" placeholder="Contact Number" [(ngModel)]="person.contactNumber" name="contactNumber" required />
+            <clr-control-error *clrIfError="'required'">Please enter contact number</clr-control-error>
+          </clr-input-container>
+          <clr-input-container>
+            <label>Email</label>
+            <input clrInput type="email" placeholder="Email" [(ngModel)]="employee.emailID" name="email" required />
+            <clr-control-error>Please enter email</clr-control-error>
+          </clr-input-container>
+          <clr-password-container>
+            <label>Password</label>
+            <input placeholder="Password" clrPassword [(ngModel)]="employee.password" name="password" required/>
+            <clr-control-error *clrIfError="'required'">This field is required!</clr-control-error>
+            <clr-control-error *clrIfError="'minlength'">It must be at least 8 characters!</clr-control-error>
+          </clr-password-container>
+          <clr-date-container>
+            <label>DOB</label>
+            <input type="date" clrDate name="maxDemo" [(ngModel)]="person.dateOfBirth" />
+            <clr-control-error *clrIfError="'max'">Error message about max date</clr-control-error>
+          </clr-date-container><br>
+          <button type="submit" class="btn btn-primary" (click)="addNewEmployee()">Add Employee</button>
+    </form>
+</div>
+<table *ngIf="showAll" class="table">
+    <thead class="table-dark">
+        <tr>
+            <th>Employee ID</th>            
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th><b><u>Operation</u></b></th>
+        </tr>
+    </thead>
+    <tbody >
+        <tr *ngFor="let user of users">
+            <td>{{user.employeeId}}</td>
+            <td>{{user.person.firstName}}</td>
+            <td>{{user.emailID}}</td>
+            <td>{{user.role}}</td>
+            <td>{{user.status}}</td>
+            <!-- <td><button (click)="delete(user.emailID)">Delete</button></td> -->
+            
+            <td>
+              <button class="btn btn-icon btn-warning" (click)="delete(user.emailID)">
+                <clr-icon shape="trash"></clr-icon>
+              </button>
+            </td>
+        </tr>
+    </tbody>
+</table>

@@ -1,0 +1,17 @@
+
+.custom-bg{
+    background:80% center no-repeat url('/assets/logo.svg');
+    background-size: 40%;
+}
+.logo {
+    /* font-family: 'Courgette', cursive; */
+    /* font-family: 'Times New Roman', Times, serif; */
+}
+.header-custom{
+    position: sticky;
+    width: 50%;
+}
+/* .logo-img{
+    width: 50%;
+} */
+

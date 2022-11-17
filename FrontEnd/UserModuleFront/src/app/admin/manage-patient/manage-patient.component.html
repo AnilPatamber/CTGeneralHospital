@@ -1,0 +1,33 @@
+<div class="PatientDetails">
+<h1>Patient Details</h1>
+<table class="table ">
+    <thead class="table-head">
+        <tr>
+            <th>Name</th> 
+            <th>Email</th>
+            <th>Gender</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Operation</th>
+        </tr>
+    </thead>
+    <tbody >
+        <tr *ngFor="let patient of patientsList" class="tableRow">
+            
+            <!-- <td>{{patient['person'].firstName}}</td>
+            <td>{{patient['person'].lastName}}</td> -->
+            <td>{{patient['person'].firstName+' '+patient['person'].lastName}}</td>
+            <td>{{patient['email']}}</td>
+            <td>{{patient['person'].gender}}</td>
+            <td>{{patient['role']}}</td>
+            <td>{{patient['status']}}</td>       
+            
+            <td>
+              <button class="btn btn-icon btn-warning deleteButton" (click)="delete(patient['email'])">
+                <clr-icon shape="trash"></clr-icon>
+              </button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>

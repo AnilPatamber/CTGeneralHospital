@@ -1,0 +1,15 @@
+h1{
+    text-align: center;
+}
+.my-img{
+    height: max-content;
+    width: 50%; 
+    margin-left: 20%;   
+    /* border: 2px solid red; */
+    align-self: flex-end;
+    
+}
+.card-div{
+    display: flex;
+    /* border: 2px solid red; */
+}
