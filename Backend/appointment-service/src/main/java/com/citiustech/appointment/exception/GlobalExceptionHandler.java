@@ -21,6 +21,20 @@ import com.citiustech.appointment.dto.ResponseObject;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+	
+
+	@ExceptionHandler(ResourceNotFoundException.class)
+	public ResponseEntity<ResponseObject> handlePatientNotFoundException(ResourceNotFoundException exception,
+			WebRequest request) {
+
+		ResponseObject ResponseObject = new ResponseObject();
+		ResponseObject.setHttpStatusCode(HttpStatus.NOT_FOUND.value());
+		ResponseObject.setMessage(exception.getMessage());
+		ResponseObject.setLocalDateTime(LocalDateTime.now());
+
+		return new ResponseEntity<ResponseObject>(ResponseObject, HttpStatus.NOT_FOUND);
+
+	}
 
 
 	@ExceptionHandler(MethodArgumentTypeMismatchException.class)

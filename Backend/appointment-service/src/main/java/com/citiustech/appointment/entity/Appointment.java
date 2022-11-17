@@ -27,7 +27,6 @@ public class Appointment {
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    private Long appointmentId;
 
-	    @CreationTimestamp
 	    private LocalDate appointmentDate;
 
 	    private String title;

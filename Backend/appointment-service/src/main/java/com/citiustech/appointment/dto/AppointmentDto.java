@@ -3,7 +3,10 @@ package com.citiustech.appointment.dto;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.citiustech.appointment.entity.AppointmentStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -15,6 +18,8 @@ import lombok.Data;
 public class AppointmentDto {
 
 	@NotNull(message = "AppointmentDate cannot be null")
+	@FutureOrPresent(message = "Please select correct date")
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 	private LocalDate appointmentDate;
 
 	@NotNull(message = "Title cannot be null")
