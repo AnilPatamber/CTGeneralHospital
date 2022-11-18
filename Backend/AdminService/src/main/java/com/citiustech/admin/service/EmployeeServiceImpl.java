@@ -2,11 +2,12 @@ package com.citiustech.admin.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.citiustech.admin.dto.ChangePasswordDto;
@@ -37,9 +38,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Autowired
 	DataTransfer dataTransfer;
 
+	@Autowired
+	private PasswordEncoder bcryptEncoder;
+
 	@Override
 	public List<Employee> getAllEmployees() {
-		return employeeRepository.findAll();
+
+		List<Employee> list = employeeRepository.findAll();
+
+		return list.stream().filter(e -> e.isDeleted() == false).collect(Collectors.toList());
 
 	}
 
@@ -58,86 +65,113 @@ public class EmployeeServiceImpl implements EmployeeService {
 					"Patient user already exist with the email " + employeeDto.getEmailID());
 		}
 		Employee employee = dataTransfer.addDatatoEntity(employeeDto);
-		System.out.println(employee);
+		String defaultPassword = randomPassword.generateRandomPassword();
+		employee.setPassword(bcryptEncoder.encode(defaultPassword));
+		System.out.println("Default Password: " + defaultPassword);
+		employee.setDefault(true);
+		emailSenderService.sendDefaultPasswordEmail(employee, defaultPassword);
 		Employee employee1 = employeeRepository.save(employee);
 		return employee1.getPerson().getFirstName();
 
 	}
 
 	@Override
-	public Employee getEmployeeByID(String employeeID) {
+	public Employee getEmployeeByID(String employeeID) throws Exception {
 		// Optional<Employee> employee = employeeRepository.findById(employeeID);
 		// EmployeeDto emplyoeeDto = dataTransfer.addDatatoDto(employee.get());
-		return employeeRepository.findById(employeeID).orElseThrow(
+		Employee emp = employeeRepository.findById(employeeID).orElseThrow(
 				() -> new EmployeeNotFoundException("Employee user not found with the employeeID : " + employeeID));
+		if (emp.isDeleted() == true)
+			throw new Exception(" Employee is deleted");
+		return emp;
 	}
 
 	@Override
-	public void updateEmployeeStatus(String employeeID, String newStatus) {
-		Optional<Employee> optional = employeeRepository.findById(employeeID);
-		Employee employee = optional.orElseThrow(
+	public void updateEmployeeStatus(String employeeID, String newStatus) throws Exception {
+
+		Employee employee = employeeRepository.findById(employeeID).orElseThrow(
 				() -> new EmployeeNotFoundException("Employee user not found with the employeeID : " + employeeID));
 
-		System.out.println(newStatus);
 		employee.setStatus(Status.valueOf(newStatus));
 
-		switch (newStatus) {
-		case "ACTIVE":
-			System.out.println("In active");
-			String otp = randomPassword.generateRandomPassword();
+		if (employee.isDeleted() == false) {
 
-			emailSenderService.sendOtpOverEmail(employee.getPerson().getFirstName(), employee.getEmailID(), otp);
-			// emailSenderService.sendWelcomeEmail(employee.getPerson().getFirstName(),
-			// employee.getEmailID());
-			break;
-		case "INACTIVE":
-			emailSenderService.deactivationEmail(employee.getPerson().getFirstName(), employee.getEmailID());
-			break;
-		case "BLOCKED":
-			// code block
-			break;
-		default:
-			// code block
+			switch (newStatus) {
+			case "ACTIVE":
+
+				String defaultPassword = randomPassword.generateRandomPassword();
+				employee.setPassword(bcryptEncoder.encode(defaultPassword));
+				System.out.println("Default Password: " + defaultPassword);
+				employee.setDefault(true);
+				emailSenderService.sendDefaultPasswordEmail(employee, defaultPassword);
+
+				break;
+			case "INACTIVE":
+				emailSenderService.deactivationEmail(employee.getPerson().getFirstName(), employee.getEmailID());
+				break;
+			case "BLOCKED":
+				// code block
+				break;
+			default:
+				// code block
+			}
+
+		}
+
+		else {
+			throw new Exception(" Employee is deleted");
 		}
 
 	}
 
 	@Override
-	public void updateEmployeePassword(String employeeID, ChangePasswordDto changePasswordDto) throws Exception {
-		Optional<Employee> optional = employeeRepository.findById(employeeID);
-		Employee employee = optional.orElseThrow(
-				() -> new EmployeeNotFoundException("Employee user not found with the employeeID : " + employeeID));
+	public void updateEmployeePassword(String emailId, ChangePasswordDto changePasswordDto) throws Exception {
+
+		Employee employee = employeeRepository.findByEmailID(emailId).orElseThrow(
+				() -> new EmployeeNotFoundException("Employee user not found with the email : " + emailId));
+		System.out.println("employee : " + employee);
+
+		if (employee.isDeleted() == true) {
+			throw new Exception(" Employee is deleted");
+		}
 
 		String currentPassword = changePasswordDto.getOldPassword();
 		String newPassword = changePasswordDto.getNewPassword();
 		String confirmNewPassword = changePasswordDto.getConfirmPassword();
-		if (!(currentPassword.equals(employee.getPassword()))) {
+
+		if (!(bcryptEncoder.matches(currentPassword, employee.getPassword()))) {
+			System.out.println("Password not matching");
 			throw new Exception("Password not matching");
 		} else if (!newPassword.equals(confirmNewPassword)) {
+			System.out.println("New Password and Confirm password should be same");
 			throw new Exception("New Password and Confirm password should be same");
 		}
-		employee.setPassword(newPassword);
 
-//		if (!(bcryptEncoder.matches(currentPassword, patientUser.getPassword()))) {
-//			throw new Exception("Password not matching");
-//		} else if (!newPassword.equals(confirmNewPassword)) {
-//			throw new Exception("New Password and Confirm password should be same");
-//		}
+		employee.setPassword(bcryptEncoder.encode(newPassword));
+		employee.setDefault(false);
+		employeeRepository.save(employee);
 
 	}
 
 	@Override
 	public List<Employee> getEmployeeByFirstName(String firstName) {
-//	
 
-		return employeeRepository.findAll();
+		List<Employee> list = employeeRepository.findAll();
+
+		return list.stream().filter(e -> e.isDeleted() == false && e.getPerson().getFirstName().equals(firstName))
+				.collect(Collectors.toList());
+
 	}
 
 	@Override
-	public void updateEmployee(String employeeID, EmployeeDto employeedto) {
+	public void updateEmployee(String employeeID, EmployeeDto employeedto) throws Exception {
+
 		Employee employee = employeeRepository.findById(employeeID)
 				.orElseThrow(() -> new EmployeeNotFoundException("employee doesn't exit by given id"));
-		// employee1 = dataTransfer.addDatatoEntity(employeeDto);
+
+		if (employee.isDeleted() == true) {
+			throw new Exception(" Employee is deleted");
+		}
 
 		employee.setDateOfJoining(
 				employeedto.getDateOfJoining() != null ? employeedto.getDateOfJoining() : employee.getDateOfJoining());
@@ -145,7 +179,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 		employee.setRole(employeedto.getRole() != null ? employeedto.getRole() : employee.getRole());
 		employee.setStatus((employeedto.getStatus() != null ? employeedto.getStatus() : employee.getStatus()));
-		employee.setPassword(employeedto.getPassword() != null ? employeedto.getPassword() : employee.getPassword());
 		Person person = new Person();
 		person.setContactNumber(
 				employeedto.getPersonDto().getContactNumber() != null ? employeedto.getPersonDto().getContactNumber()
@@ -170,39 +203,20 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	}
 
-	public String loginEmployee(String emailID, String password) throws Exception {
+	@Override
+	public boolean forgotPassword(String emailID) throws Exception {
+		Employee employee = employeeRepository.findByEmailID(emailID).orElseThrow(
+				() -> new EmployeeNotFoundException("Employee user not found with the emailID : " + emailID));
 
-		Optional<Employee> employee = employeeRepository.findByEmailID(emailID);
-
-		Employee employee1 = employee.get();
-
-		if (employee1.getStatus().equals(Status.ACTIVE)) {
-
-			if (employee1.getPassword().equals(password)) {
-
-				return ("employee Logined Successfully ");
-			} else {
-				throw new Exception("Wrong Credentials ");
-
-			}
-		} else if (employee1.getStatus().equals(Status.INACTIVE)) {
-			throw new Exception("Wrong Credentials ");
-
-		} else {
-			throw new Exception("Wrong Credentials ");
-			// return ("can't login, you are blocked");
+		if (employee.isDeleted() == true) {
+			throw new Exception(" Employee is deleted");
 		}
 
-	}
-
-	@Override
-	public boolean forgotPassword(String emailID) {
-		Optional<Employee> employee = employeeRepository.findByEmailID(emailID);
-		Employee employee1 = employee.orElseThrow(
-				() -> new EmployeeNotFoundException("Employee user not found with the emailID : " + emailID));
-		String otp = randomPassword.generateRandomPassword();
-		employee1.setPassword(otp);
-		emailSenderService.sendOtpOverEmail(employee1.getPerson().getFirstName(), emailID, otp);
+		String defaultPassword = randomPassword.generateRandomPassword();
+		employee.setPassword(bcryptEncoder.encode(defaultPassword));
+		System.out.println("Default Password: " + defaultPassword);
+		employee.setDefault(true);
+		emailSenderService.sendDefaultPasswordEmail(employee, defaultPassword);
 
 		return true;
 	}
@@ -213,11 +227,34 @@ public class EmployeeServiceImpl implements EmployeeService {
 		List<String> physicianNamesList = new ArrayList<>();
 		List<Employee> employeeList = getAllEmployees();
 		employeeList.forEach((emp) -> {
-			if(emp.getRole().equals(Role.PHYSICIAN))
-			physicianNamesList.add(emp.getPerson().getFirstName() + " " + emp.getPerson().getLastName());
+			if (emp.getRole().equals(Role.PHYSICIAN) && emp.isDeleted() == false)
+				physicianNamesList.add(emp.getPerson().getFirstName() + " " + emp.getPerson().getLastName());
 		});
 
 		return physicianNamesList;
+	}
+
+	@Override
+	public Employee getEmployeeByEmailID(String emailId) throws Exception {
+		Employee emp = employeeRepository.findByEmailID(emailId)
+				.orElseThrow(() -> new EmployeeNotFoundException("Employee not exist with email : " + emailId));
+
+		if (emp.isDeleted() == true)
+			throw new Exception(" Employee is deleted");
+		return emp;
+	}
+
+	@Override
+	public void deleteEmployee(String emailId) {
+
+		Employee employee;
+		try {
+			employee = getEmployeeByEmailID(emailId);
+			employee.setDeleted(true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 
 }

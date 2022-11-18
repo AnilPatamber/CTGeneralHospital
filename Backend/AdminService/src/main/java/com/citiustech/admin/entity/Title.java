@@ -1,9 +1,9 @@
 package com.citiustech.admin.entity;
 
 public enum Title {
- MR("MR"), MRS("MRS"), MISS("MISS");
-    
-    private String title;
+	MR("Mr"), MRS("Mrs"), MISS("Ms"), Dr("Dr");
+
+	private String title;
 
 	Title(String title) {
 		this.setTitle(title);
@@ -16,8 +16,5 @@ public enum Title {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-    
-  
-
 
 }

@@ -6,6 +6,7 @@ import com.citiustech.admin.dto.EmployeeDto;
 import com.citiustech.admin.dto.PersonDto;
 import com.citiustech.admin.entity.Employee;
 import com.citiustech.admin.entity.Person;
+import com.citiustech.admin.entity.Title;
 
 @Component
 public class DataTransfer {
@@ -27,7 +28,6 @@ public class DataTransfer {
 			//employeeDto.setEmployeeID(employee.getEmployeeID());
 			employeeDto.setDateOfJoining(employee.getDateOfJoining());
 			employeeDto.setEmailID(employee.getEmailID());
-			employeeDto.setPassword(employee.getPassword());
 			employeeDto.setRole(employee.getRole());
 			employeeDto.setStatus(employee.getStatus());
 
@@ -51,7 +51,6 @@ public class DataTransfer {
 			//employee.setEmployeeID(employeeDto.getEmployeeID());
 			employee.setDateOfJoining(employeeDto.getDateOfJoining());
 			employee.setEmailID(employeeDto.getEmailID());
-			employee.setPassword(employeeDto.getPassword());
 			employee.setRole(employeeDto.getRole());
 			employee.setStatus(employeeDto.getStatus());
 

@@ -52,7 +52,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 			response.setLocalDateTime(LocalDateTime.now());
 
 		} catch (Exception e) {
-
+			System.out.println(e.getMessage());
 			response.setMessage("Email Sending failure : " + e.getMessage());
 			response.setHttpStatusCode(HttpStatus.BAD_REQUEST.value());
 			response.setLocalDateTime(LocalDateTime.now());
@@ -71,12 +71,12 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 	@Override
 	public MailDto sendWelcomeEmail(String firstName, String email) {
 		System.out.println("111");
-		String url = "http://localhost:8001";
+		String url = "http://localhost:804";
 		String subject = "Welcome to CT  Hospital";
 		String emailBody = "Hi " + firstName + ",<br><br>"
 				+ "</br>Welcome to CT  Hospital, please visit CT  Hospital website to get more details.</br>URL: " + url
 				+ "<br><br><br> <p>" + "Regards, <br />" + "<em>CT Hospital</em>" + "</p><br> ";
-		MailDto welcomeRequest = new MailDto(firstName, email, "cthospitalpms@outlook.com", subject, emailBody);
+		MailDto welcomeRequest = new MailDto(firstName, email, "cthospital8@gmail.com", subject, emailBody);
 		sendEmail(welcomeRequest);
 		return welcomeRequest;
 	}
@@ -97,7 +97,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 				+ "<em>PMS Hospital</em>\r\n" + "</p> ";
 
 		MailDto request = new MailDto(patientUser.getPerson().getFirstName(), patientUser.getEmail(),
-				"cthospitalpms@outlook.com", subject, emailBody);
+				"cthospital8@gmail.com", subject, emailBody);
 		sendEmail(request);
 		return request;
 	}

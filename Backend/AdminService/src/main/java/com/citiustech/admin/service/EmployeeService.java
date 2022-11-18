@@ -13,20 +13,24 @@ public interface EmployeeService {
 
 	public String addEmployee(EmployeeDto employeeDto) throws EmployeeAlreadyExistException;
 
-	public Employee getEmployeeByID(String employeeID);
+	public Employee getEmployeeByID(String employeeID) throws Exception;
 
-	public void updateEmployeeStatus(String employeeID, String newStatus);
+	public void updateEmployeeStatus(String employeeID, String newStatus) throws Exception;
 
 	public void updateEmployeePassword(String employeeID, ChangePasswordDto changePasswordDto) throws Exception;
 
-	public void updateEmployee(String employeeID, EmployeeDto employeeDto);
+	public void updateEmployee(String employeeID, EmployeeDto employeeDto) throws Exception;
 
 	public List<Employee> getEmployeeByFirstName(String firstName);
 
-	public boolean forgotPassword(String emailID);
+	public boolean forgotPassword(String emailID) throws Exception;
 
-	public String loginEmployee(String emailID, String password) throws Exception;
+	//public String loginEmployee(String emailID, String password) throws Exception;
 	
 	public List<String> getPhysicianNames();
+	
+	public Employee getEmployeeByEmailID(String emailId) throws Exception;
+	
+	public void deleteEmployee(String emailId);
 
 }

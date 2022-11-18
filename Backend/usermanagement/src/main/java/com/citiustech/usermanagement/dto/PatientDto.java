@@ -23,7 +23,7 @@ public class PatientDto {
 	private String password;
 
 	@NotEmpty(message = "Kindly select the title")
-	@Pattern(regexp = "Mr.|Ms.|Mrs.|Dr.", message = "Kindly select the title", flags = Pattern.Flag.CASE_INSENSITIVE)
+	@Pattern(regexp = "Mr|Ms|Mrs|Dr", message = "Kindly select the title", flags = Pattern.Flag.CASE_INSENSITIVE)
 	private String title;
 	
 	@NotEmpty(message = "Kindly select the title")

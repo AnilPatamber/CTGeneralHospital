@@ -2,7 +2,7 @@ package com.citiustech.appointment.entity;
 
 public enum AppointmentStatus {
 
-	PENDING("PENDING"), CONFIRM("CONFIRM");
+	PENDING("PENDING"), CONFIRM("CONFIRM"), DECLINED("DECLINED");
 
 	private String name;
 

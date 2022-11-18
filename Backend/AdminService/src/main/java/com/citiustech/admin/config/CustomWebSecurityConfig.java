@@ -1,14 +1,55 @@
 package com.citiustech.admin.config;
-/*
- * import org.springframework.context.annotation.Bean; import
- * org.springframework.context.annotation.Configuration; import
- * org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder; import
- * org.springframework.security.crypto.password.PasswordEncoder;
- * 
- * @Configuration //@EnableWebSecurity public class CustomWebSecurityConfig{
- * 
- * @Bean public PasswordEncoder passwordEncoder() { return new
- * BCryptPasswordEncoder(); }
- * 
- * }
- */
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+
+import com.citiustech.admin.service.CustomUserDetailsService;
+
+@Configuration
+@EnableWebSecurity
+public class CustomWebSecurityConfig {
+
+	@Autowired
+	private CustomUserDetailsService customUserDetialsService;
+
+
+	@Bean
+	SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+
+		http.csrf().disable();
+
+		http.cors().and().authorizeHttpRequests(
+				(auth) -> auth.anyRequest().permitAll());
+
+//		http.cors().and().authorizeHttpRequests((auth) -> auth
+//				.antMatchers("/patient/register", "/patient/login", "/patient/changepassword/**", "/sendemail/**")
+//				.permitAll());
+//		
+		
+		http.httpBasic().and().formLogin();
+
+		return http.build();
+	}
+
+	@Bean
+	public AuthenticationManager authenticationManagerBean(HttpSecurity http) throws Exception {
+		AuthenticationManagerBuilder authenticationManagerBuilder = http
+				.getSharedObject(AuthenticationManagerBuilder.class);
+		authenticationManagerBuilder.userDetailsService(customUserDetialsService).passwordEncoder(passwordEncoder());
+		return authenticationManagerBuilder.build();
+	}
+
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
+}

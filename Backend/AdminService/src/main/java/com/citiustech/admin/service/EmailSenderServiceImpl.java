@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.citiustech.admin.dto.MailDto;
 import com.citiustech.admin.dto.ResponseObject;
+import com.citiustech.admin.entity.Employee;
 
 @Service
 public class EmailSenderServiceImpl implements EmailSenderService {
@@ -70,16 +71,14 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 		String emailBody = "Hi " + firstName + ",<br><br>"
 				+ "</br>Welcome to CT  Hospital, please visit CT  Hospital website to get more details.</br>URL: " + url
 				+ "<br><br><br> <p>" + "Regards, <br />" + "<em>CT Hospital</em>" + "</p><br> ";
-		MailDto welcomeRequest = new MailDto(firstName, email, "cthospital2022@outlook.com", subject, emailBody);
+		MailDto welcomeRequest = new MailDto(firstName, email, "cthospital8@gmail.com", subject, emailBody);
 		sendEmail(welcomeRequest);
 		return welcomeRequest;
 	}
 
 	public MailDto sendOtpOverEmail(String firstName, String email,String otp) {
 		String url = "http://localhost:8080";
-		String subject = "OTP For Lgin CT Hospital";
-		System.out.println("Anil..................................................");
-	
+		String subject = "OTP For Login CT Hospital";	
 		
 		String emailBody = "Hi " + firstName + ",<br><br>" + "</br>Welcome to CT  Hospital,OTP for</br> Login : " + otp
 				+ "</br> <br>" + "please visit CT  Hospital website to get more details.</br>URL: " + url
@@ -97,10 +96,31 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 		String emailBody = "Hi " + firstName + ",<br><br>"
 				+ "</br>Your CT Account is deactivated,to activate please contact admin.</br>URL: " + url
 				+ "<br><br><br> <p>" + "Regards, <br />" + "<em>CT Hospital</em>" + "</p><br> ";
-		MailDto deactivateRequest = new MailDto(firstName, email, "cthospital2022@outlook.com", subject, emailBody);
+		MailDto deactivateRequest = new MailDto(firstName, email, "cthospital8@gmail.com", subject, emailBody);
 		sendEmail(deactivateRequest);
 		return deactivateRequest;
 
+	}
+	
+	/**
+	 * Method to send default password mail
+	 * 
+	 * @param User details
+	 * @return Mail request object
+	 */
+
+	@Override
+	public MailDto sendDefaultPasswordEmail(Employee employee, String defaultPassword) {
+		String subject = "Default Password for CT General Hospital";
+		String emailBody = "Hi " + employee.getPerson().getFirstName() + ",<br><br>"
+				+ "</br>Please use the default password provided in the mail to log in.</br></br>Password: " + "<b>"
+				+ defaultPassword + "</b></br><br>" + "<br><br> <p>\r\n" + "Regards, <br />\r\n"
+				+ "<em>PMS Hospital</em>\r\n" + "</p> ";
+
+		MailDto request = new MailDto(employee.getPerson().getFirstName(), employee.getEmailID(),
+				"cthospital8@gmail.com", subject, emailBody);
+		sendEmail(request);
+		return request;
 	}
 
 	

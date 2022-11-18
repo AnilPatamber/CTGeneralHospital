@@ -24,7 +24,7 @@ public class Person {
 	@GeneratedValue(generator = "custom_personId")
 	//@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private String personId;
-	private Title title;
+	private String title;
 	private String firstName;
 	private String lastName;
 	private Gender gender;
