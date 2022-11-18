@@ -36,12 +36,15 @@ public class CustomWebSecurityConfig {
 				.permitAll());
 		// .anyRequest().authenticated()
 
+		
 		/*
 		 * http.httpBasic().and().formLogin().and().sessionManagement()
-		 * .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		 * .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
 		 */
+		 
 		
-		http.httpBasic().and().formLogin();
+		http.httpBasic().and().formLogin().and().sessionManagement()
+		.sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
 
 		return http.build();
 	}

@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -34,7 +35,8 @@ public class CustomWebSecurityConfig {
 //				.permitAll());
 //		
 		
-		http.httpBasic().and().formLogin();
+		http.httpBasic().and().formLogin().and().sessionManagement()
+		.sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
 
 		return http.build();
 	}
