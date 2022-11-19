@@ -262,9 +262,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 		List<Employee> employeeList = getAllEmployees();
 
-		employeeList.stream().filter(e -> e.getRole().equals(Role.PHYSICIAN) && e.isDeleted() == false);
+		return employeeList.stream().filter(e -> e.getRole().equals(Role.PHYSICIAN) && e.isDeleted() == false).collect(Collectors.toList());
 
-		return employeeList;
+		
 	}
 
 }
