@@ -259,8 +259,17 @@ public class EmployeeController {
 		try {
 
 			authenticatePatient(loginDto.getEmail(), loginDto.getPassword());
-			logger.info("Login Successfull");
-			ResponseObject response = new ResponseObject(HttpStatus.OK.value(), "Login Successfull", currentTime);
+			ResponseObject response;
+			boolean isDefault = employeeService.getEmployeeByEmailID(loginDto.getEmail()).isDefault();
+			if(isDefault) {
+				logger.info("Login Successfull with Default Password");
+				response = new ResponseObject(HttpStatus.ALREADY_REPORTED.value(), "Login Successfull with Default Password", currentTime);
+			}
+			
+			else {
+				logger.info("Login Successfull");
+				response = new ResponseObject(HttpStatus.OK.value(), "Login Successfull", currentTime);
+			}
 			return new ResponseEntity<>(response, HttpStatus.OK);
 
 		} catch (Exception e) {
