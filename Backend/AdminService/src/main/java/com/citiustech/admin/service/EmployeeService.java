@@ -32,5 +32,7 @@ public interface EmployeeService {
 	public Employee getEmployeeByEmailID(String emailId) throws Exception;
 	
 	public void deleteEmployee(String emailId);
+	
+	public List<Employee> getAllPhysician();
 
 }

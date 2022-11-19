@@ -65,14 +65,15 @@ public class EmployeeController {
 	 */
 	@PostMapping(value = "/employees")
 	@ApiOperation("Add Employee")
-	public ResponseEntity<ResponseObject> addEmployee(@RequestBody EmployeeDto employeeDto) throws EmployeeAlreadyExistException {
+	public ResponseEntity<ResponseObject> addEmployee(@RequestBody EmployeeDto employeeDto)
+			throws EmployeeAlreadyExistException {
 //		try {
-			employeeService.addEmployee(employeeDto);
-			emailSenderService.sendWelcomeEmail(employeeDto.getPersonDto().getFirstName(), employeeDto.getEmailID());
-			ResponseObject response = new ResponseObject(HttpStatus.CREATED.value(), "User created successfully",
-					LocalDateTime.now());
-			logger.info("add employee response : {}", response);
-			return new ResponseEntity<>(response, HttpStatus.CREATED);
+		employeeService.addEmployee(employeeDto);
+		emailSenderService.sendWelcomeEmail(employeeDto.getPersonDto().getFirstName(), employeeDto.getEmailID());
+		ResponseObject response = new ResponseObject(HttpStatus.CREATED.value(), "User created successfully",
+				LocalDateTime.now());
+		logger.info("add employee response : {}", response);
+		return new ResponseEntity<>(response, HttpStatus.CREATED);
 //		} catch (Exception e) {
 //			ResponseObject response = new ResponseObject(HttpStatus.BAD_REQUEST.value(),
 //					"User was not created successfully", LocalDateTime.now());
@@ -92,7 +93,7 @@ public class EmployeeController {
 	@GetMapping(value = "/employees/{emplyoeeID}")
 	@ApiOperation("Get Employee By Employee ID")
 	public ResponseEntity<Employee> getEmplyoeeByID(@PathVariable String emplyoeeID) {
-		Employee employee =null;
+		Employee employee = null;
 		try {
 			employee = employeeService.getEmployeeByID(emplyoeeID);
 			return new ResponseEntity<Employee>(employee, HttpStatus.OK);
@@ -100,7 +101,7 @@ public class EmployeeController {
 			logger.error("Employee not exist");
 			return new ResponseEntity<Employee>(employee, HttpStatus.BAD_REQUEST);
 		}
-			
+
 	}
 
 	/*
@@ -261,11 +262,12 @@ public class EmployeeController {
 			authenticatePatient(loginDto.getEmail(), loginDto.getPassword());
 			ResponseObject response;
 			boolean isDefault = employeeService.getEmployeeByEmailID(loginDto.getEmail()).isDefault();
-			if(isDefault) {
+			if (isDefault) {
 				logger.info("Login Successfull with Default Password");
-				response = new ResponseObject(HttpStatus.ALREADY_REPORTED.value(), "Login Successfull with Default Password", currentTime);
+				response = new ResponseObject(HttpStatus.ALREADY_REPORTED.value(),
+						"Login Successfull with Default Password", currentTime);
 			}
-			
+
 			else {
 				logger.info("Login Successfull");
 				response = new ResponseObject(HttpStatus.OK.value(), "Login Successfull", currentTime);
@@ -319,6 +321,15 @@ public class EmployeeController {
 	public ResponseEntity<List<Employee>> getAllEmployee() {
 		List<Employee> employee = employeeService.getAllEmployees();
 		logger.info("fetching employees successfully");
+		return new ResponseEntity<>(employee, HttpStatus.OK);
+	}
+
+	@GetMapping(value = "/physician")
+	@ApiOperation("Get All Physicains")
+	public ResponseEntity<List<Employee>> getAllPhysicians() {
+
+		List<Employee> employee = employeeService.getAllPhysician();
+		logger.info("fetching physicians successfully");
 		return new ResponseEntity<>(employee, HttpStatus.OK);
 	}
 

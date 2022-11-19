@@ -257,4 +257,14 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	}
 
+	@Override
+	public List<Employee> getAllPhysician() {
+
+		List<Employee> employeeList = getAllEmployees();
+
+		employeeList.stream().filter(e -> e.getRole().equals(Role.PHYSICIAN) && e.isDeleted() == false);
+
+		return employeeList;
+	}
+
 }
