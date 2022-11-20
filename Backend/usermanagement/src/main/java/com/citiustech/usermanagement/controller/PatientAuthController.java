@@ -18,21 +18,21 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.citiustech.usermanagement.dto.ChangePasswordDto;
 import com.citiustech.usermanagement.dto.LoginDto;
-import com.citiustech.usermanagement.dto.PatientDto;
 import com.citiustech.usermanagement.dto.ResponseObject;
 import com.citiustech.usermanagement.entity.Patient;
 import com.citiustech.usermanagement.entity.Status;
 import com.citiustech.usermanagement.exception.StatusNotActiveException;
-import com.citiustech.usermanagement.service.EmailSenderService;
 import com.citiustech.usermanagement.service.UserService;
 import com.citiustech.usermanagement.utililty.UtilityService;
 
@@ -40,62 +40,138 @@ import io.swagger.annotations.ApiOperation;
 
 @CrossOrigin(maxAge = 3600)
 @RestController
-@RequestMapping("/patient")
+@RequestMapping("/auth")
 public class PatientAuthController {
 
 	/*
 	 * Logger declaration to generate logs
 	 * 
-	 * @param PatientAuthController.class
+	 * @param UserController.class
 	 */
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private UserService userService;
-
+	
+	@Autowired
+	private AuthenticationManager authenticationManager;
+	
 	@Autowired
 	private UtilityService utilityService;
 
-	@Autowired
-	private EmailSenderService emailSenderService;
-
-	@Autowired
-	private AuthenticationManager authenticationManager;
-
 	/*
-	 * Rest endpoint to register new patient user into database as a Model of
-	 * PatientDto class
+	 * Rest endpoint to fetch a patient user from the database
 	 * 
-	 * @param patientDto
+	 * @param email representing the patient's email id
 	 * 
-	 * @return A ResponseEntity representing the ResponseObject class
+	 * @return A ResponseEntity representing the Patient class
 	 */
 
-	@PostMapping("/register")
-	@ApiOperation("Register Patient")
-	public ResponseEntity<ResponseObject> registerPatientUser(@Valid @RequestBody PatientDto patientDto) {
+	@GetMapping("/patient/{email}")
+	@ApiOperation("Get Patient By Email")
+	public ResponseEntity<Patient> getPatientUserByEmailId(@PathVariable String email) {
 
-//		try {
+		Patient patient = null;
 
-			userService.registerPatientUser(patientDto);
-			ResponseObject response = new ResponseObject(HttpStatus.CREATED.value(), "User created successfully",
-					LocalDateTime.now());
-			logger.info("Valid User response : {}", response);
-			emailSenderService.sendWelcomeEmail(patientDto.getFirstName(), patientDto.getEmail());
-			return new ResponseEntity<>(response, HttpStatus.CREATED);
-//
-//		} catch (Exception e) {
-//
-//			ResponseObject response = new ResponseObject(HttpStatus.BAD_REQUEST.value(),
-//					"User was not created successfully", LocalDateTime.now());
-//			logger.error("Error User response : {}", response);
-//			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-//
-//		}
+		try {
+
+			patient = userService.getPatientByEmail(email);
+			logger.info("Patient retrieved successfull");
+			return new ResponseEntity<Patient>(patient, HttpStatus.OK);
+
+		} catch (Exception e) {
+
+			logger.info("Patient retrieved failed");
+			return new ResponseEntity<Patient>(patient, HttpStatus.BAD_REQUEST);
+		}
 
 	}
 
+	/*
+	 * Rest endpoint to fetch a patient user from the database
+	 * 
+	 * @param email representing the patient's email id
+	 * 
+	 * @return A ResponseEntity representing the Patient class
+	 */
+
+	@GetMapping("/patient")
+	@ApiOperation("Get Patient By ID")
+	public ResponseEntity<Patient> getPatientUserById(@RequestParam("id") String id) {
+
+		Patient patient = null;
+
+		try {
+
+			patient = userService.getPatientById(id);
+			logger.info("Patient retrieved successfull");
+			return new ResponseEntity<Patient>(patient, HttpStatus.OK);
+
+		} catch (Exception e) {
+
+			logger.info("Patient retrieved failed");
+			return new ResponseEntity<Patient>(patient, HttpStatus.BAD_REQUEST);
+		}
+
+	}
+
+	/*
+	 * Rest endpoint to fetch all patient users from the database
+	 * 
+	 * @return A ResponseEntity representing the list of patient's
+	 */
+	@ResponseStatus(value = HttpStatus.FOUND)
+	@GetMapping("/patients")
+	@ApiOperation("Get All Patients")
+	public ResponseEntity<List<Patient>> getAllPatientUsers() {
+
+		List<Patient> patientList = new ArrayList<>();
+
+		try {
+
+			patientList = userService.getAllPatients();
+			logger.info("Patient list retrieved successfull");
+			return new ResponseEntity<List<Patient>>(patientList, HttpStatus.OK);
+
+		} catch (Exception e) {
+
+			logger.info("Patient list retrieved failed");
+			return new ResponseEntity<List<Patient>>(patientList, HttpStatus.BAD_REQUEST);
+
+		}
+
+	}
+
+	@GetMapping("/patient/count")
+	@ApiOperation("Get Patient Count")
+	public ResponseEntity<Long> getPatientCount() {
+
+		Long patientCount = null;
+		try {
+			patientCount = userService.patientCount();
+			logger.info("Patient Count Successfull: " + patientCount);
+			return new ResponseEntity<Long>(patientCount, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.info("Patient Count failed: " + patientCount);
+			return new ResponseEntity<Long>(patientCount, HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@DeleteMapping("/patient/delete/{email}")
+	@ApiOperation("Delete Patient By Email")
+	public ResponseEntity<String> deletePatientByEmail(@PathVariable String email) {
+
+		return new ResponseEntity<String>(userService.deletePatientByEmail(email), HttpStatus.OK);
+	}
+
+	@DeleteMapping("/patient/delete")
+	@ApiOperation("Delete Patient")
+	public ResponseEntity<String> deletePatient(@RequestBody Patient patient) {
+
+		return new ResponseEntity<String>(userService.deletePatient(patient), HttpStatus.OK);
+	}
+	
 	/*
 	 * To login patient user into application
 	 * 
@@ -162,120 +238,5 @@ public class PatientAuthController {
 		}
 
 	}
-
-	/*
-	 * Rest endpoint to change the password for patient user
-	 * 
-	 * @param email representing the email
-	 * 
-	 * @param passwordDto representing the ChangePasswordDto class
-	 * 
-	 * @return A ResponseEntity representing the ResponseObject class
-	 */
-
-	@PostMapping("/changepassword/{email}")
-	@ApiOperation("Change Password For Patient")
-	public ResponseEntity<ResponseObject> changePasswordOfPatientUser(@PathVariable String email,
-			@RequestBody ChangePasswordDto passwordDto) {
-
-		try {
-			Patient patientUser = userService.getPatientByEmail(email);
-			userService.changePassword(patientUser, passwordDto);
-			logger.info("Password change successfull");
-			ResponseObject response = new ResponseObject(HttpStatus.OK.value(), "Password change Successfull",
-					LocalDateTime.now());
-			return new ResponseEntity<ResponseObject>(response, HttpStatus.OK);
-
-		} catch (Exception e) {
-			logger.info("Password change failed");
-			ResponseObject response = new ResponseObject(HttpStatus.BAD_REQUEST.value(), "Password change failed",
-					LocalDateTime.now());
-			return new ResponseEntity<ResponseObject>(response, HttpStatus.BAD_REQUEST);
-
-		}
-
-	}
-
-	/*
-	 * Rest endpoint to update the password for patient user
-	 * 
-	 * @param email representing the email
-	 * 
-	 * @return A ResponseEntity representing the ResponseObject class
-	 */
-
-	@PostMapping("/forgotpassword/{email}")
-	@ApiOperation("Forgot Password For Patient")
-	public ResponseEntity<ResponseObject> forgotPasswordOfPatientUser(@PathVariable String email) {
-
-		try {
-
-			Patient patientUser = userService.getPatientByEmail(email);
-			userService.forgotPassword(patientUser);
-			logger.info("Default password sent successfull");
-			ResponseObject response = new ResponseObject(HttpStatus.OK.value(), "Default password sent successfull",
-					LocalDateTime.now());
-			return new ResponseEntity<ResponseObject>(response, HttpStatus.OK);
-		} catch (Exception e) {
-			logger.info("Default password sending failed");
-			ResponseObject response = new ResponseObject(HttpStatus.BAD_REQUEST.value(),
-					"Default password sending failed", LocalDateTime.now());
-			return new ResponseEntity<ResponseObject>(response, HttpStatus.BAD_REQUEST);
-		}
-
-	}
-	
-	/*
-	 * Rest endpoint to fetch logged patient user as a Model of Patient class
-	 * 
-	 * @return A ResponseEntity representing the Patient class
-	 */
-
-	@GetMapping("/patient/get-login-user")
-	@ApiOperation("Get Logged In Patient")
-	public ResponseEntity<Patient> getLoginUser() {
-
-		Patient patientUser = null;
-
-		try {
-
-			patientUser = userService.getLoggedInPatientUser();
-			logger.info("Logged in User Authorities"
-					+ SecurityContextHolder.getContext().getAuthentication().getAuthorities());
-			logger.info("Logged in User fetched");
-			return new ResponseEntity<Patient>(patientUser, HttpStatus.OK);
-		} catch (Exception e) {
-
-			logger.info("Logged in User fetched failed");
-			return new ResponseEntity<Patient>(patientUser, HttpStatus.BAD_REQUEST);
-		}
-
-	}
-
-	/*
-	 * Rest endpoint to fetch logged patient user as a Model of Patient class
-	 * 
-	 * @return A ResponseEntity representing the Patient class
-	 */
-
-	@GetMapping("patient/get-login-user-authorities")
-	@ApiOperation("Get Logged In Patient Role")
-	public ResponseEntity<List<GrantedAuthority>> getLoginUserAuthority() {
-
-		List<GrantedAuthority> authorities = new ArrayList<>();
-
-		try {
-			authorities.addAll(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
-			logger.info("Logged in User fetched");
-			return new ResponseEntity<List<GrantedAuthority>>(authorities, HttpStatus.OK);
-		} catch (Exception e) {
-
-			logger.info("Logged in User fetched failed");
-			return new ResponseEntity<List<GrantedAuthority>>(authorities, HttpStatus.BAD_REQUEST);
-		}
-
-	}
-
-
 
 }
