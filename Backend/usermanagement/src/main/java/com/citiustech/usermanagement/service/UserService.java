@@ -10,9 +10,9 @@ public interface UserService {
 
 	public Patient registerPatientUser(PatientDto user);
 
-	public Patient getPatientByEmail(String email);
+	public Patient getPatientByEmail(String email) throws Exception;
 	
-	public Patient getPatientById(String id);
+	public Patient getPatientById(String id) throws Exception;
 
 	public List<Patient> getAllPatients();
 
@@ -25,5 +25,9 @@ public interface UserService {
 	public void forgotPassword(Patient patientUser);
 	
 	public Long patientCount();
+	
+	public String deletePatientByEmail(String emailId);
+	
+	public String deletePatient(Patient patient);
 
 }

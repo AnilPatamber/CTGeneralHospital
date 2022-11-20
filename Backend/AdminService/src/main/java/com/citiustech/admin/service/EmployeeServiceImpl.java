@@ -82,7 +82,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		Employee emp = employeeRepository.findById(employeeID).orElseThrow(
 				() -> new EmployeeNotFoundException("Employee user not found with the employeeID : " + employeeID));
 		if (emp.isDeleted() == true)
-			throw new Exception(" Employee is deleted");
+			throw new Exception(" Employee already got deleted");
 		return emp;
 	}
 
@@ -119,7 +119,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		}
 
 		else {
-			throw new Exception(" Employee is deleted");
+			throw new Exception(" Employee already got deleted");
 		}
 
 	}
@@ -132,7 +132,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		System.out.println("employee : " + employee);
 
 		if (employee.isDeleted() == true) {
-			throw new Exception(" Employee is deleted");
+			throw new Exception(" Employee already got deleted");
 		}
 
 		String currentPassword = changePasswordDto.getOldPassword();
@@ -170,7 +170,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 				.orElseThrow(() -> new EmployeeNotFoundException("employee doesn't exit by given id"));
 
 		if (employee.isDeleted() == true) {
-			throw new Exception(" Employee is deleted");
+			throw new Exception(" Employee already got deleted");
 		}
 
 		employee.setDateOfJoining(
@@ -209,7 +209,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 				() -> new EmployeeNotFoundException("Employee user not found with the emailID : " + emailID));
 
 		if (employee.isDeleted() == true) {
-			throw new Exception(" Employee is deleted");
+			throw new Exception(" Employee already got deleted");
 		}
 
 		String defaultPassword = randomPassword.generateRandomPassword();
@@ -240,7 +240,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 				.orElseThrow(() -> new EmployeeNotFoundException("Employee not exist with email : " + emailId));
 
 		if (emp.isDeleted() == true)
-			throw new Exception(" Employee is deleted");
+			throw new Exception(" Employee already got deleted");
 		return emp;
 	}
 

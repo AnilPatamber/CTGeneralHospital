@@ -57,5 +57,7 @@ public class Patient {
 	@JoinColumn(name = "personId")
 	private Person person;
 	
+	private boolean isDeleted;
+	
 
 }

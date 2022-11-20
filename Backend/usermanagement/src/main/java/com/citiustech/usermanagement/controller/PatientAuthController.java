@@ -31,6 +31,8 @@ import com.citiustech.usermanagement.service.EmailSenderService;
 import com.citiustech.usermanagement.service.UserService;
 import com.citiustech.usermanagement.utililty.UtilityService;
 
+import io.swagger.annotations.ApiOperation;
+
 @CrossOrigin(maxAge = 3600)
 @RestController
 @RequestMapping("/patient")
@@ -66,6 +68,7 @@ public class PatientAuthController {
 	 */
 
 	@PostMapping("/register")
+	@ApiOperation("Register Patient")
 	public ResponseEntity<ResponseObject> registerPatientUser(@Valid @RequestBody PatientDto patientDto) {
 
 //		try {
@@ -97,6 +100,7 @@ public class PatientAuthController {
 	 */
 
 	@PostMapping("/login")
+	@ApiOperation("Login Patient")
 	public ResponseEntity<ResponseObject> loginPatientUser(@Valid @RequestBody LoginDto loginDto) throws Exception {
 
 		LocalDateTime currentTime = LocalDateTime.now();
@@ -165,6 +169,7 @@ public class PatientAuthController {
 	 */
 
 	@PostMapping("/changepassword/{email}")
+	@ApiOperation("Change Password For Patient")
 	public ResponseEntity<ResponseObject> changePasswordOfPatientUser(@PathVariable String email,
 			@RequestBody ChangePasswordDto passwordDto) {
 
@@ -195,6 +200,7 @@ public class PatientAuthController {
 	 */
 
 	@PostMapping("/forgotpassword/{email}")
+	@ApiOperation("Forgot Password For Patient")
 	public ResponseEntity<ResponseObject> forgotPasswordOfPatientUser(@PathVariable String email) {
 
 		try {

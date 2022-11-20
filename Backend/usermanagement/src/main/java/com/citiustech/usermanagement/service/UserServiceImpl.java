@@ -1,6 +1,7 @@
 package com.citiustech.usermanagement.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,11 +84,13 @@ public class UserServiceImpl implements UserService {
 	 * @return A Patient representing the Patient class
 	 */
 	@Override
-	public Patient getPatientByEmail(String email) {
+	public Patient getPatientByEmail(String email) throws Exception {
 
-		return patientRepository.findByEmail(email)
+		Patient patient = patientRepository.findByEmail(email)
 				.orElseThrow(() -> new ResourceNotFoundException("Patient user not found with the email : " + email));
-
+		if(patient.isDeleted() == true)
+			throw new Exception(" Patient already got deleted");
+		return patient;
 	}
 
 	/*
@@ -97,8 +100,10 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public List<Patient> getAllPatients() {
+		
+		List<Patient> patientList = patientRepository.findAll();
 
-		return patientRepository.findAll();
+		return patientList.stream().filter( p -> p.isDeleted() == false).collect(Collectors.toList());
 	}
 
 	/*
@@ -112,6 +117,8 @@ public class UserServiceImpl implements UserService {
 		String email = getLoggedInPatientUser().getEmail();
 		return patientRepository.findByEmail(email)
 				.orElseThrow(() -> new ResourceNotFoundException("Patient user not found with the email : " + email));
+		
+		
 	}
 
 	/*
@@ -126,7 +133,12 @@ public class UserServiceImpl implements UserService {
 
 		String email = authentication.getName();
 		
-		Status status = getPatientByEmail(email).getStatus();
+		Status status = null;
+		try {
+			status = getPatientByEmail(email).getStatus();
+		} catch (Exception e) {
+			logger.error("Patient already got deleted");
+		}
 		if(!status.equals(Status.ACTIVE)) {
 			throw new  StatusNotActiveException("Status of "+email+" is not Active, Please check with admin");
 		}
@@ -182,16 +194,55 @@ public class UserServiceImpl implements UserService {
 	 * @return A Patient representing the Patient class
 	 */
 	@Override
-	public Patient getPatientById(String id) {
+	public Patient getPatientById(String id) throws Exception {
 
-		return patientRepository.findById(id)
+		Patient patient =  patientRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Patient user not found with the id : " + id));
+		
+		if(patient.isDeleted() == true)
+			throw new Exception(" Patient already got deleted");
+		return patient;
+		
+		
 	}
 
 	@Override
 	public Long patientCount() {
 
-		return patientRepository.count();
+		return patientRepository.findAll().stream().filter( p -> p.isDeleted() == false).count();
+
+		
+	}
+
+	@Override
+	public String deletePatientByEmail(String emailId) {
+		
+		Patient patient;
+		try {
+			patient = getPatientByEmail(emailId);
+			patient.setDeleted(true);
+			patientRepository.save(patient);
+			return "Patient soft deleted";
+		} catch (Exception e) {
+			logger.error("Patient Not Deleted");
+		}
+		
+		return "Patient Not deleted";
+		
+	}
+
+	@Override
+	public String deletePatient(Patient patient) {
+		
+		try {
+			patient.setDeleted(true);
+			patientRepository.save(patient);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return "Patient soft deleted";
+		
 	}
 
 }

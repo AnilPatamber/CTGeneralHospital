@@ -334,6 +334,7 @@ public class EmployeeController {
 	}
 
 	@DeleteMapping("employee/delete/{email}")
+	@ApiOperation("Delete Employee By Email")
 	public String deleteEmployee(@PathVariable String email) {
 
 		employeeService.deleteEmployee(email);
