@@ -19,7 +19,7 @@ public class AppointmentDto {
 
 	@NotNull(message = "AppointmentDate cannot be null")
 	@FutureOrPresent(message = "Please select correct date")
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private LocalDate appointmentDate;
 
 	@NotNull(message = "Title cannot be null")
