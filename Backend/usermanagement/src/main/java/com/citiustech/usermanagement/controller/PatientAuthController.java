@@ -1,6 +1,8 @@
 package com.citiustech.usermanagement.controller;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -13,7 +15,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -219,5 +224,58 @@ public class PatientAuthController {
 		}
 
 	}
+	
+	/*
+	 * Rest endpoint to fetch logged patient user as a Model of Patient class
+	 * 
+	 * @return A ResponseEntity representing the Patient class
+	 */
+
+	@GetMapping("/patient/get-login-user")
+	@ApiOperation("Get Logged In Patient")
+	public ResponseEntity<Patient> getLoginUser() {
+
+		Patient patientUser = null;
+
+		try {
+
+			patientUser = userService.getLoggedInPatientUser();
+			logger.info("Logged in User Authorities"
+					+ SecurityContextHolder.getContext().getAuthentication().getAuthorities());
+			logger.info("Logged in User fetched");
+			return new ResponseEntity<Patient>(patientUser, HttpStatus.OK);
+		} catch (Exception e) {
+
+			logger.info("Logged in User fetched failed");
+			return new ResponseEntity<Patient>(patientUser, HttpStatus.BAD_REQUEST);
+		}
+
+	}
+
+	/*
+	 * Rest endpoint to fetch logged patient user as a Model of Patient class
+	 * 
+	 * @return A ResponseEntity representing the Patient class
+	 */
+
+	@GetMapping("patient/get-login-user-authorities")
+	@ApiOperation("Get Logged In Patient Role")
+	public ResponseEntity<List<GrantedAuthority>> getLoginUserAuthority() {
+
+		List<GrantedAuthority> authorities = new ArrayList<>();
+
+		try {
+			authorities.addAll(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
+			logger.info("Logged in User fetched");
+			return new ResponseEntity<List<GrantedAuthority>>(authorities, HttpStatus.OK);
+		} catch (Exception e) {
+
+			logger.info("Logged in User fetched failed");
+			return new ResponseEntity<List<GrantedAuthority>>(authorities, HttpStatus.BAD_REQUEST);
+		}
+
+	}
+
+
 
 }

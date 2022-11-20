@@ -124,57 +124,6 @@ public class UserController {
 
 	}
 
-	/*
-	 * Rest endpoint to fetch logged patient user as a Model of Patient class
-	 * 
-	 * @return A ResponseEntity representing the Patient class
-	 */
-
-	@GetMapping("/patient/get-login-user")
-	@ApiOperation("Get Logged In Patient")
-	public ResponseEntity<Patient> getLoginUser() {
-
-		Patient patientUser = null;
-
-		try {
-
-			patientUser = userService.getLoggedInPatientUser();
-			logger.info("Logged in User Authorities"
-					+ SecurityContextHolder.getContext().getAuthentication().getAuthorities());
-			logger.info("Logged in User fetched");
-			return new ResponseEntity<Patient>(patientUser, HttpStatus.OK);
-		} catch (Exception e) {
-
-			logger.info("Logged in User fetched failed");
-			return new ResponseEntity<Patient>(patientUser, HttpStatus.BAD_REQUEST);
-		}
-
-	}
-
-	/*
-	 * Rest endpoint to fetch logged patient user as a Model of Patient class
-	 * 
-	 * @return A ResponseEntity representing the Patient class
-	 */
-
-	@GetMapping("patient/get-login-user-authorities")
-	@ApiOperation("Get Logged In Patient Role")
-	public ResponseEntity<List<GrantedAuthority>> getLoginUserAuthority() {
-
-		List<GrantedAuthority> authorities = new ArrayList<>();
-
-		try {
-			authorities.addAll(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
-			logger.info("Logged in User fetched");
-			return new ResponseEntity<List<GrantedAuthority>>(authorities, HttpStatus.OK);
-		} catch (Exception e) {
-
-			logger.info("Logged in User fetched failed");
-			return new ResponseEntity<List<GrantedAuthority>>(authorities, HttpStatus.BAD_REQUEST);
-		}
-
-	}
-
 	@GetMapping("/patient/count")
 	@ApiOperation("Get Patient Count")
 	public ResponseEntity<Long> getPatientCount() {
