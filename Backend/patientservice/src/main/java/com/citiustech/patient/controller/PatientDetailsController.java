@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,6 +49,29 @@ public class PatientDetailsController {
 
 		} catch (Exception e) {
 			logger.info("Patient Details Added Failed");
+			return new ResponseEntity<PatientDetails>(patientDetails, HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	/*
+	 * Rest endpoint to add patient details of existing patient into database as a
+	 * Model of PatientDetails class
+	 * 
+	 * @param patientDetailsObj representing the PatientDetails
+	 * 
+	 * @return A ResponseEntity representing the PatientDetails class
+	 */
+	@GetMapping("/{patientId}")
+	public ResponseEntity<PatientDetails> getPatientDetailsByPatientId(@PathVariable String patientId) {
+
+		PatientDetails patientDetails = null;
+		try {
+			patientDetails = patientDetailSevice.getPatientDetailsByPatientId(patientId);
+			logger.info("Patient Details Fetched Successfull");
+			return new ResponseEntity<PatientDetails>(patientDetails, HttpStatus.OK);
+
+		} catch (Exception e) {
+			logger.info("Patient Details Fetch Failed");
 			return new ResponseEntity<PatientDetails>(patientDetails, HttpStatus.BAD_REQUEST);
 		}
 	}
